@@ -1,0 +1,2 @@
+# Smart City Python requirements
+pyspark==4.2.0

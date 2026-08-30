@@ -1,0 +1,9 @@
+{
+  "name": "smart-city-node-red",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Node-RED flows and Kafka integration for the Smart City platform",
+  "dependencies": {
+    "@yroshcha/node-red-contrib-kafka": "6.2.5"
+  }
+}

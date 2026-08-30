@@ -1,0 +1,179 @@
+"use client";
+
+import {
+  AlertTriangle,
+  Bell,
+  CheckCircle2,
+  Database,
+  Droplets,
+  Gauge,
+  Radio,
+  Save,
+  Server,
+  SlidersHorizontal,
+  Thermometer,
+} from "lucide-react";
+import { BACKEND_URL, SPARK_THRESHOLDS } from "@/lib/constants";
+
+const serviceSettings = [
+  {
+    icon: Server,
+    title: "Backend API",
+    status: "http://localhost:4000",
+    detail: BACKEND_URL,
+  },
+  {
+    icon: Radio,
+    title: "Socket.IO",
+    status: "Real Time",
+    detail: "environment, water, traffic, spark",
+  },
+  {
+    icon: Database,
+    title: "Kafka / Spark",
+    status: "Streaming",
+    detail: "smartcity.spark.alerts and aggregations",
+  },
+];
+
+const thresholdSettings = [
+  {
+    icon: Thermometer,
+    label: "Critical temperature",
+    value: SPARK_THRESHOLDS.criticalTemperature,
+    unit: "°C",
+  },
+  {
+    icon: Gauge,
+    label: "AQI critique",
+    value: SPARK_THRESHOLDS.criticalAqi,
+    unit: "AQI",
+  },
+  {
+    icon: Droplets,
+    label: "Flow minimum",
+    value: SPARK_THRESHOLDS.criticalLowFlow,
+    unit: "L/min",
+  },
+  {
+    icon: Gauge,
+    label: "Congestion critique",
+    value: SPARK_THRESHOLDS.criticalCongestion,
+    unit: "ratio",
+  },
+];
+
+export default function SettingsPage() {
+  return (
+    <main className="mx-auto min-h-screen w-full max-w-7xl bg-black p-4 text-slate-100 sm:p-6 lg:p-8">
+      <header className="mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <h2 className="text-3xl font-black text-slate-100">Settings</h2>
+          <p className="mt-2 max-w-2xl text-sm font-medium text-slate-500">
+            Operational configuration of services, Spark thresholds, and alert preferences.
+          </p>
+        </div>
+        <button className="flex w-fit items-center gap-2 rounded-xl border border-slate-800 bg-slate-950 px-4 py-2 text-sm font-black text-slate-400">
+          <Save className="h-4 w-4" />
+          Read-only
+        </button>
+      </header>
+
+      <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {serviceSettings.map((item) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.title} className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5 shadow-2xl shadow-black/20">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-500/10 text-green-500">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <span className="rounded-full bg-green-500/10 px-3 py-1 text-[10px] font-black uppercase text-green-400">
+                  {item.status}
+                </span>
+              </div>
+              <h3 className="text-lg font-black text-slate-100">{item.title}</h3>
+              <p className="mt-2 break-words text-sm font-medium text-slate-500">
+                {item.detail}
+              </p>
+            </div>
+          );
+        })}
+      </section>
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <section className="rounded-3xl border border-slate-800 bg-slate-950/70 p-5 shadow-2xl shadow-black/20">
+          <div className="mb-5 flex items-center gap-2">
+            <SlidersHorizontal className="h-5 w-5 text-slate-500" />
+            <h3 className="text-lg font-black text-slate-100">Seuils Spark</h3>
+          </div>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {thresholdSettings.map((item) => {
+              const Icon = item.icon;
+              return (
+                <label key={item.label} className="rounded-2xl border border-slate-800 bg-black p-4">
+                  <span className="mb-3 flex items-center gap-2 text-sm font-black text-slate-100">
+                    <Icon className="h-4 w-4 text-green-500" />
+                    {item.label}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      readOnly
+                      value={item.value}
+                      className="h-11 min-w-0 flex-1 rounded-xl border border-slate-800 bg-slate-950 px-3 text-sm font-bold text-slate-200"
+                    />
+                    <span className="w-16 text-sm font-bold text-slate-500">{item.unit}</span>
+                  </div>
+                </label>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div className="rounded-3xl border border-slate-800 bg-slate-950/70 p-5 shadow-2xl shadow-black/20">
+            <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-slate-100">
+              <Bell className="h-5 w-5 text-green-500" />
+              Alerts
+            </h3>
+            <div className="space-y-3">
+              {[
+                "Show critical alerts",
+                "Keep acknowledged alerts",
+                "Report stale data",
+              ].map((label) => (
+                <label
+                  key={label}
+                  className="flex items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-black px-4 py-3"
+                >
+                  <span className="text-sm font-bold text-slate-300">{label}</span>
+                  <input type="checkbox" defaultChecked className="h-5 w-5 rounded border-slate-700" />
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-green-500/20 bg-green-500/10 p-5">
+            <h3 className="mb-2 flex items-center gap-2 text-sm font-black uppercase text-green-400">
+              <AlertTriangle className="h-4 w-4" />
+              Variables d&apos;environnement
+            </h3>
+            <p className="text-sm font-medium leading-relaxed text-green-400">
+              Les valeurs sensibles restent hors du client. Modifiez Kafka, MongoDB et Spark via les fichiers d&apos;environnement locaux.
+            </p>
+          </div>
+
+          <div className="rounded-3xl border border-green-500/20 bg-green-500/10 p-5">
+            <h3 className="mb-2 flex items-center gap-2 text-sm font-black uppercase text-green-400">
+              <CheckCircle2 className="h-4 w-4" />
+              Expected State
+            </h3>
+            <p className="text-sm font-medium leading-relaxed text-green-400">
+              Kafka, Node-RED, backend, frontend, and Spark should be started in this order.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
