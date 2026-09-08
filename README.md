@@ -21,6 +21,8 @@ Spark 4.2.0          Node.js API
                        Next.js dashboard
 ```
 
+The Docker Compose deployment contains seven services: Kafka, kafka-init, MongoDB, Node-RED, Spark, the Node.js backend, and the Next.js frontend. Kafka 4.3.1 runs as a single-node KRaft broker and controller.
+
 ## Current stack
 
 | Component | Version / policy | Role |
@@ -50,19 +52,7 @@ No local Node.js, Java, Spark, or Kafka installation is required for the Docker 
 cp .env.example .env
 ```
 
-2. If you have an older installation, stop it before migrating to Kafka KRaft:
-
-```bash
-docker compose down
-```
-
-If the old ZooKeeper/Kafka volumes are still present and this is a development installation, reset them once:
-
-```bash
-docker compose down -v
-```
-
-3. Build and start the complete platform:
+2. Build and start the complete platform:
 
 ```bash
 docker compose up -d --build
@@ -156,10 +146,6 @@ docker exec nodered-smartcity node -e "const f=require('/data/flows.json'); cons
 ```
 
 You should see `yroshcha-kafka-broker` and `yroshcha-kafka-producer`.
-
-### Kafka was migrated from ZooKeeper
-
-This release uses KRaft. Do not reuse an old ZooKeeper-based Kafka data directory. For a development reset, use `docker compose down -v` and start again.
 
 ## Clean shutdown
 
